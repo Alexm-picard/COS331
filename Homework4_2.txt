@@ -1,0 +1,23 @@
+00P099 //P0 = 99 
+120025 //R0 = 25
+08R0P0 // Load R0 into P0
+00P198 // P1 == 98
+120025  //Set to the end of the memory right after the end of program memory
+08R0P1 //load R0 into P1
+00P297 //Pointer to the counter(97)
+120000 // Counter to 0
+08R0P2 //load R0 into P2
+10R0P0 // load P0 into R0
+10R2P2 // load P2 into R2
+14R0ZZ // load r0 into acc
+20P1ZZ // add P1 to acc(temp variable)
+15R1ZZ //Load acc int R1
+14R2ZZ // load r0 into acc
+160001 // add 1 to acc(Counter)
+15R2ZZ //Load acc int R1
+08R2P2 //Load counter into memory
+25P2ZZ // If acc < P0 PSW[0] = T
+3304ZZ // Fix depending on where to branch
+00P396 // set P3 == 96
+08R1P3 // set mem location P3 to R1 (multiplication answer)
+99ZZZZ // Halt Program
