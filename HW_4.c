@@ -5,13 +5,13 @@
 #include <string.h>
 #include <fcntl.h>
 
-int opcode(char input_line[9]);
-void instructions(char instruction[9]);
-char* two_char_first(char input_line[9]);
-char* two_char_second(char input_line[9]);
-int two_int_first(char input_line[9]);
-int two_int_second(char input_line[9]);
-int four_int(char input_line[9]);
+int opcode(char input_line[6]);
+void instructions(char instruction[6]);
+char* two_char_first(char input_line[6]);
+char* two_char_second(char input_line[6]);
+int two_int_first(char input_line[6]);
+int two_int_second(char input_line[6]);
+int four_int(char input_line[6]);
 char output[2];
 char input_line[9];
 int fp, ret;
@@ -21,7 +21,7 @@ short int p0, p1, p2, p3;
 char psw[2];
 int acc, r0, r1, r2, r3; 
 char ir[6];
-char memory[6][100];//For some reason my laptop needs it in this format to properly work
+char memory[100][7];//For some reason my laptop needs it in this format to properly work
 int program_line = 0;
 int temp;
 int main(int argc, char* argv[]) {
@@ -36,51 +36,53 @@ int main(int argc, char* argv[]) {
     for(i = 0; i < 6; i++){
         memory[program_line][i] = input_line[i];
     }
+    memory[program_line][6] = '\0';
     program_line++;
   }
   program_line = 0;
   while(1){
     
-    printf("%s\n", memory[program_line]);
     instructions(memory[program_line]);
     if(opcode(memory[program_line]) == 99){
         break;
     }
-    printf("%s,%d, %d, %d\n", memory[p0], acc, r0, p0);
-    usleep(500000);
-  }
 
-  printf("%d\n", four_int(memory[14]));
+  }
+    int i;
+  for(i = 14; i < 53; i ++){
+    printf("%s\n", memory[i]);
+  }
 
   return 0;
 }
 
-int opcode(char input_line[9]){
+int opcode(char input_line[6]){
     return (input_line[0] - '0')*10 + (input_line[1] - '0');
 }
 
-char* two_char_first(char input_line[9]){
+char* two_char_first(char input_line[6]){
     output[0] = input_line[2];
     output[1] = input_line[3];
     return output;
 }
-char* two_char_second(char input_line[9]){
+char* two_char_second(char input_line[6]){
     output[0] = input_line[4];
     output[1] = input_line[5];
     return output;
 }
-int two_int_first(char input_line[9]){
+int two_int_first(char input_line[6]){
     return (input_line[2] - '0')*10 + (input_line[3] - '0');
 }
-int two_int_second(char input_line[9]){
+int two_int_second(char input_line[6]){
     return (input_line[4] - '0')*10 + (input_line[5] - '0');
 }
 
-int four_int(char input_line[9]){
-    return (input_line[2] - '0')*1000 + (input_line[3] - '0')*100+(input_line[4] - '0')*10 + (input_line[5] - '0');
+int four_int(char input_line[6]){
+    int output = (input_line[2] - '0')*1000 + (input_line[3] - '0')*100+(input_line[4] - '0')*10 + (input_line[5] - '0');
+    return output;
 }
 
-void instructions(char instruction[9]){
+void instructions(char instruction[6]){
     switch(opcode(memory[program_line])){
         case 0:
             if(strcmp(two_char_first(memory[program_line]), "P0") == 0){
@@ -153,36 +155,33 @@ void instructions(char instruction[9]){
         case 6:
             
             if(strcmp(two_char_first(memory[program_line]), "P0") == 0){
-                
                 memory[p0][0] = '9';
                 memory[p0][1] = '9';
-                memory[p0][2] = acc/1000 +'0';
-                memory[p0][3] = acc/100 - acc/1000 +'0';
-                memory[p0][4] = acc/10 - acc/100 - acc/1000 +'0';
-                memory[p0][5] = acc%10 +'0';
-                
+                memory[p0][2] = (acc / 1000) % 10 + '0';
+                memory[p0][3] = (acc / 100) % 10 + '0';
+                memory[p0][4] = (acc / 10) % 10 + '0';
+                memory[p0][5] = acc % 10 + '0';
             }else if(strcmp(two_char_first(memory[program_line]), "P1") == 0){
-                
                 memory[p1][0] = '9';
                 memory[p1][1] = '9';
-                memory[p1][2] = acc/1000 +'0';
-                memory[p1][3] = acc/100 - acc/1000 +'0';
-                memory[p1][4] = acc/10 - acc/100 - acc/1000 +'0';
-                memory[p1][5] = acc%10 +'0';
+                memory[p1][2] = (acc / 1000) % 10 + '0';
+                memory[p1][3] = (acc / 100) % 10 + '0';
+                memory[p1][4] = (acc / 10) % 10 + '0';
+                memory[p1][5] = acc % 10 + '0';
             }else if(strcmp(two_char_first(memory[program_line]), "P2") == 0){
                 memory[p2][0] = '9';
                 memory[p2][1] = '9';
-                memory[p2][2] = acc/1000 +'0';
-                memory[p2][3] = acc/100 - acc/1000 +'0';
-                memory[p2][4] = acc/10 - acc/100 - acc/1000 +'0';
-                memory[p2][5] = acc%10 +'0';
+                memory[p2][2] = (acc / 1000) % 10 + '0';
+                memory[p2][3] = (acc / 100) % 10 + '0';
+                memory[p2][4] = (acc / 10) % 10 + '0';
+                memory[p2][5] = acc % 10 + '0';
             }else if(strcmp(two_char_first(memory[program_line]), "P3") == 0){
                 memory[p3][0] = '9';
                 memory[p3][1] = '9';
-                memory[p3][2] = acc/1000 +'0';
-                memory[p3][3] = acc/100 - acc/1000 +'0';
-                memory[p3][4] = acc/10 - acc/100 - acc/1000 +'0';
-                memory[p3][5] = acc%10 +'0';
+                memory[p3][2] = (acc / 1000) % 10 + '0';
+                memory[p3][3] = (acc / 100) % 10 + '0';
+                memory[p3][4] = (acc / 10) % 10 + '0';
+                memory[p3][5] = acc % 10 + '0';
             }else{
                 printf("Invalid Storage Location");
                 exit(0);
@@ -200,133 +199,133 @@ void instructions(char instruction[9]){
             break;
         case 8:
             if(strcmp(two_char_second(memory[program_line]), "P0")== 0){
-                if(strcmp(two_char_first(memory[program_line]), "R0") == 0){
+                if (strcmp(two_char_first(memory[program_line]), "R0") == 0){
                     memory[p0][0] = '9';
                     memory[p0][1] = '9';
-                    memory[p0][2] = r0/1000 +'0';
-                    memory[p0][3] = r0/100 - r0/1000 +'0';
-                    memory[p0][4] = r0/10 - r0/100 - r0/1000 +'0';
-                    memory[p0][5] = r0%10 +'0';
+                    memory[p0][2] = (r0 / 1000) % 10 + '0';
+                    memory[p0][3] = (r0 / 100) % 10 + '0';
+                    memory[p0][4] = (r0 / 10) % 10 + '0';
+                    memory[p0][5] = r0 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R1") == 0){
                     memory[p0][0] = '9';
                     memory[p0][1] = '9';
-                    memory[p0][2] = r1/1000 +'0';
-                    memory[p0][3] = r1/100 - r1/1000 +'0';
-                    memory[p0][4] = r1/10 - r1/100 - r1/1000 +'0';
-                    memory[p0][5] = r1%10 +'0';
+                    memory[p0][2] = (r1 / 1000) % 10 + '0';
+                    memory[p0][3] = (r1 / 100) % 10 + '0';
+                    memory[p0][4] = (r1 / 10) % 10 + '0';
+                    memory[p0][5] = r1 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R2") == 0){
                     memory[p0][0] = '9';
                     memory[p0][1] = '9';
-                    memory[p0][2] = r2/1000 +'0';
-                    memory[p0][3] = r2/100 - r2/1000 +'0';
-                    memory[p0][4] = r2/10 - r2/100 - r2/1000 +'0';
-                    memory[p0][5] = r2%10 +'0';
+                    memory[p0][2] = (r2 / 1000) % 10 + '0';
+                    memory[p0][3] = (r2 / 100) % 10 + '0';
+                    memory[p0][4] = (r2 / 10) % 10 + '0';
+                    memory[p0][5] = r2 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R3") == 0){
                     memory[p0][0] = '9';
                     memory[p0][1] = '9';
-                    memory[p0][2] = r3/1000 +'0';
-                    memory[p0][3] = r3/100 - r3/1000 +'0';
-                    memory[p0][4] = r3/10 - r3/100 - r3/1000 +'0';
-                    memory[p0][5] = r3%10 +'0';
+                    memory[p0][2] = (r3 / 1000) % 10 + '0';
+                    memory[p0][3] = (r3 / 100) % 10 + '0';
+                    memory[p0][4] = (r3 / 10) % 10 + '0';
+                    memory[p0][5] = r3 % 10 + '0';
                 }else{
                     printf("Invalid Storage Location");
                     exit(0);
                 }
             }else if(strcmp(two_char_second(memory[program_line]), "P1") == 0){
-                if(strcmp(two_char_first(memory[program_line]), "R0") == 0){
+                if (strcmp(two_char_first(memory[program_line]), "R0") == 0){
                     memory[p1][0] = '9';
                     memory[p1][1] = '9';
-                    memory[p1][2] = r0/1000 +'0';
-                    memory[p1][3] = r0/100 - r0/1000 +'0';
-                    memory[p1][4] = r0/10 - r0/100 - r0/1000 +'0';
-                    memory[p1][5] = r0%10 +'0';
+                    memory[p1][2] = (r0 / 1000) % 10 + '0';
+                    memory[p1][3] = (r0 / 100) % 10 + '0';
+                    memory[p1][4] = (r0 / 10) % 10 + '0';
+                    memory[p1][5] = r0 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R1") == 0){
                     memory[p1][0] = '9';
                     memory[p1][1] = '9';
-                    memory[p1][2] = r1/1000 +'0';
-                    memory[p1][3] = r1/100 - r1/1000 +'0';
-                    memory[p1][4] = r1/10 - r1/100 - r1/1000 +'0';
-                    memory[p1][5] = r1%10 +'0';
+                    memory[p1][2] = (r1 / 1000) % 10 + '0';
+                    memory[p1][3] = (r1 / 100) % 10 + '0';
+                    memory[p1][4] = (r1 / 10) % 10 + '0';
+                    memory[p1][5] = r1 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R2") == 0){
                     memory[p1][0] = '9';
                     memory[p1][1] = '9';
-                    memory[p1][2] = r2/1000 +'0';
-                    memory[p1][3] = r2/100 - r2/1000 +'0';
-                    memory[p1][4] = r2/10 - r2/100 - r2/1000 +'0';
-                    memory[p1][5] = r2%10 +'0';
+                    memory[p1][2] = (r2 / 1000) % 10 + '0';
+                    memory[p1][3] = (r2 / 100) % 10 + '0';
+                    memory[p1][4] = (r2 / 10) % 10 + '0';
+                    memory[p1][5] = r2 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R3") == 0){
                     memory[p1][0] = '9';
                     memory[p1][1] = '9';
-                    memory[p1][2] = r3/1000 +'0';
-                    memory[p1][3] = r3/100 - r3/1000 +'0';
-                    memory[p1][4] = r3/10 - r3/100 - r3/1000 +'0';
-                    memory[p1][5] = r3%10 +'0';
+                    memory[p1][2] = (r3 / 1000) % 10 + '0';
+                    memory[p1][3] = (r3 / 100) % 10 + '0';
+                    memory[p1][4] = (r3 / 10) % 10 + '0';
+                    memory[p1][5] = r3 % 10 + '0';
                 }else{
                     printf("Invalid Storage Location");
                     exit(0);
                 }
             }else if(strcmp(two_char_second(memory[program_line]), "P2") == 0){
-                if(strcmp(two_char_first(memory[program_line]), "R0") == 0){
+                if (strcmp(two_char_first(memory[program_line]), "R0") == 0){
                     memory[p2][0] = '9';
                     memory[p2][1] = '9';
-                    memory[p2][2] = r0/1000 +'0';
-                    memory[p2][3] = r0/100 - r0/1000 +'0';
-                    memory[p2][4] = r0/10 - r0/100 - r0/1000 +'0';
-                    memory[p2][5] = r0%10 +'0';
+                    memory[p2][2] = (r0 / 1000) % 10 + '0';
+                    memory[p2][3] = (r0 / 100) % 10 + '0';
+                    memory[p2][4] = (r0 / 10) % 10 + '0';
+                    memory[p2][5] = r0 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R1") == 0){
                     memory[p2][0] = '9';
                     memory[p2][1] = '9';
-                    memory[p2][2] = r1/1000 +'0';
-                    memory[p2][3] = r1/100 - r1/1000 +'0';
-                    memory[p2][4] = r1/10 - r1/100 - r1/1000 +'0';
-                    memory[p2][5] = r1%10 +'0';
+                    memory[p2][2] = (r1 / 1000) % 10 + '0';
+                    memory[p2][3] = (r1 / 100) % 10 + '0';
+                    memory[p2][4] = (r1 / 10) % 10 + '0';
+                    memory[p2][5] = r1 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R2") == 0){
                     memory[p2][0] = '9';
                     memory[p2][1] = '9';
-                    memory[p2][2] = r2/1000 +'0';
-                    memory[p2][3] = r2/100 - r2/1000 +'0';
-                    memory[p2][4] = r2/10 - r2/100 - r2/1000 +'0';
-                    memory[p2][5] = r2%10 +'0';
+                    memory[p2][2] = (r2 / 1000) % 10 + '0';
+                    memory[p2][3] = (r2 / 100) % 10 + '0';
+                    memory[p2][4] = (r2 / 10) % 10 + '0';
+                    memory[p2][5] = r2 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R3") == 0){
                     memory[p2][0] = '9';
                     memory[p2][1] = '9';
-                    memory[p2][2] = r3/1000 +'0';
-                    memory[p2][3] = r3/100 - r3/1000 +'0';
-                    memory[p2][4] = r3/10 - r3/100 - r3/1000 +'0';
-                    memory[p2][5] = r3%10 +'0';
+                    memory[p2][2] = (r3 / 1000) % 10 + '0';
+                    memory[p2][3] = (r3 / 100) % 10 + '0';
+                    memory[p2][4] = (r3 / 10) % 10 + '0';
+                    memory[p2][5] = r3 % 10 + '0';
                 }else{
                     printf("Invalid Storage Location");
                     exit(0);
                 }
             }else if(strcmp(two_char_second(memory[program_line]), "P3") == 0){
-                if(strcmp(two_char_first(memory[program_line]), "R0") == 0){
+                if (strcmp(two_char_first(memory[program_line]), "R0") == 0){
                     memory[p3][0] = '9';
                     memory[p3][1] = '9';
-                    memory[p3][2] = r0/1000 +'0';
-                    memory[p3][3] = r0/100 - r0/1000 +'0';
-                    memory[p3][4] = r0/10 - r0/100 - r0/1000 +'0';
-                    memory[p3][5] = r0%10 +'0';
+                    memory[p3][2] = (r0 / 1000) % 10 + '0';
+                    memory[p3][3] = (r0 / 100) % 10 + '0';
+                    memory[p3][4] = (r0 / 10) % 10 + '0';
+                    memory[p3][5] = r0 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R1") == 0){
                     memory[p3][0] = '9';
                     memory[p3][1] = '9';
-                    memory[p3][2] = r1/1000 +'0';
-                    memory[p3][3] = r1/100 - r1/1000 +'0';
-                    memory[p3][4] = r1/10 - r1/100 - r1/1000 +'0';
-                    memory[p3][5] = r1%10 +'0';
+                    memory[p3][2] = (r1 / 1000) % 10 + '0';
+                    memory[p3][3] = (r1 / 100) % 10 + '0';
+                    memory[p3][4] = (r1 / 10) % 10 + '0';
+                    memory[p3][5] = r1 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R2") == 0){
                     memory[p3][0] = '9';
                     memory[p3][1] = '9';
-                    memory[p3][2] = r2/1000 +'0';
-                    memory[p3][3] = r2/100 - r2/1000 +'0';
-                    memory[p3][4] = r2/10 - r2/100 - r2/1000 +'0';
-                    memory[p3][5] = r2%10 +'0';
+                    memory[p3][2] = (r2 / 1000) % 10 + '0';
+                    memory[p3][3] = (r2 / 100) % 10 + '0';
+                    memory[p3][4] = (r2 / 10) % 10 + '0';
+                    memory[p3][5] = r2 % 10 + '0';
                 }else if(strcmp(two_char_first(memory[program_line]), "R3") == 0){
                     memory[p3][0] = '9';
                     memory[p3][1] = '9';
-                    memory[p3][2] = r3/1000 +'0';
-                    memory[p3][3] = r3/100 - r3/1000 +'0';
-                    memory[p3][4] = r3/10 - r3/100 - r3/1000 +'0';
-                    memory[p3][5] = r3%10 +'0';
+                    memory[p3][2] = (r3 / 1000) % 10 + '0';
+                    memory[p3][3] = (r3 / 100) % 10 + '0';
+                    memory[p3][4] = (r3 / 10) % 10 + '0';
+                    memory[p3][5] = r3 % 10 + '0';
                 }else{
                     printf("Invalid Storage Location");
                     exit(0);
@@ -339,17 +338,37 @@ void instructions(char instruction[9]){
             break;
         case 9:
             if(strcmp(two_char_first(memory[program_line]), "R0") == 0){
-                *memory[two_int_second(memory[program_line])] = r0;
-            }else if(strcmp(two_char_first(memory[program_line]), "R1") == 0){
-                *memory[two_int_second(memory[program_line])] = r1;
-            }else if(strcmp(two_char_first(memory[program_line]), "R2") == 0){
-                *memory[two_int_second(memory[program_line])] = r2;
-            }else if(strcmp(two_char_first(memory[program_line]), "R3") == 0){
-                *memory[two_int_second(memory[program_line])] = r3;
-            }else{
-                printf("Invalid Storage Location");
-                exit(0);
-            }
+                    memory[two_int_second(memory[program_line])][0] = '9';
+                    memory[two_int_second(memory[program_line])][1] = '9';
+                    memory[two_int_second(memory[program_line])][2] = (r0 / 1000) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][3] = (r0 / 100) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][4] = (r0 / 10) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][5] = r0 % 10 + '0';
+                }else if(strcmp(two_char_first(memory[program_line]), "R1") == 0){
+                    memory[two_int_second(memory[program_line])][0] = '9';
+                    memory[two_int_second(memory[program_line])][1] = '9';
+                    memory[two_int_second(memory[program_line])][2] = (r1 / 1000) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][3] = (r1 / 100) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][4] = (r1 / 10) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][5] = r1 % 10 + '0';
+                }else if(strcmp(two_char_first(memory[program_line]), "R2") == 0){
+                    memory[two_int_second(memory[program_line])][0] = '9';
+                    memory[two_int_second(memory[program_line])][1] = '9';
+                    memory[two_int_second(memory[program_line])][2] = (r2 / 1000) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][3] = (r2 / 100) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][4] = (r2 / 10) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][5] = r2 % 10 + '0';
+                }else if(strcmp(two_char_first(memory[program_line]), "R3") == 0){
+                    memory[two_int_second(memory[program_line])][0] = '9';
+                    memory[two_int_second(memory[program_line])][1] = '9';
+                    memory[two_int_second(memory[program_line])][2] = (r3 / 1000) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][3] = (r3 / 100) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][4] = (r3 / 10) % 10 + '0';
+                    memory[two_int_second(memory[program_line])][5] = r3 % 10 + '0';
+                }else{
+                    printf("Invalid Storage Location");
+                    exit(0);
+                }
             program_line++;
             break;
         case 10:
@@ -366,7 +385,6 @@ void instructions(char instruction[9]){
                     printf("Invalid Storage Location");
                     exit(0);
                 }
-                printf("%d\n", r3);
             }else if(strcmp(two_char_second(memory[program_line]), "P1") == 0){
                 if(strcmp(two_char_first(memory[program_line]), "R0") == 0){
                     r0 = four_int(memory[p1]);

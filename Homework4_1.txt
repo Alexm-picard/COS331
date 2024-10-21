@@ -10,5 +10,5 @@
 01P101 // increment p1 by 1
 06P1ZZ // Store acc into memory
 25P0ZZ // If acc < P0 PSW[0] = T
-3304ZZ // Fix depending on where to branch
+3305ZZ // Fix depending on where to branch
 99ZZZZ // Halt Program
