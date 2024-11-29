@@ -21,7 +21,7 @@ short int p0, p1, p2, p3;
 char psw[2];
 int acc, r0, r1, r2, r3; 
 char ir[6];
-char memory[100][7];//For some reason my laptop needs it in this format to properly work
+char memory[100][7];// Need to have 7 to compensate for the '\0'
 int program_line = 0;
 int temp;
 int main(int argc, char* argv[]) {
@@ -46,13 +46,12 @@ int main(int argc, char* argv[]) {
     if(opcode(memory[program_line]) == 99){
         break;
     }
-
   }
-    int i;
-  for(i = 14; i < 53; i ++){
+  int i;
+  for(i = 97; i < 100; i++){
     printf("%s\n", memory[i]);
-  }
-
+  } 
+  printf("%d\n", acc);
   return 0;
 }
 
